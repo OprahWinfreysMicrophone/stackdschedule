@@ -7,8 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Stackd">
-<meta name="theme-color" content="#3b0764">
-<title>Stackd · School</title>
+<meta name="theme-color" content="#4c1d95">
+<title>Stackd · Schedule</title>
 <!-- Apply theme immediately to prevent flash -->
 <script>
 (function(){
@@ -654,6 +654,21 @@ body{font-family:'Sora',sans-serif;color:var(--txt);overscroll-behavior:none;-we
 }
 #warn-tint.warn-active{opacity:1;}
 #warn-tint.end-active{background:rgba(248,113,113,.08);opacity:1;}
+/* -- WARN OPTION BUTTONS -- */
+.warn-opt-btn{
+  background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 14px;cursor:pointer;text-align:left;width:100%;
+  font-family:"Sora",sans-serif;transition:all .15s;position:relative;
+}
+.warn-opt-btn:hover{border-color:var(--accent);}
+.warn-opt-active{background:var(--accent-dim) !important;border-color:var(--accent) !important;}
+.warn-opt-label{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px;}
+.warn-opt-active .warn-opt-label{color:var(--accent);}
+.warn-opt-desc{font-size:11px;color:var(--txt3);}
+
+.warn-play-btn:active{opacity:.8;}
+@keyframes warnPulsePreview{0%,100%{transform:scale(1);}50%{transform:scale(1.015);}}
+.warn-preview-pulse{animation:warnPulsePreview 2.5s ease-in-out infinite;}
 /* -- THEME TOGGLE -- */
 .theme-toggle{background:var(--panel2);border:1px solid var(--border);border-radius:20px;
   padding:5px 10px;cursor:pointer;font-size:14px;line-height:1;
@@ -768,91 +783,62 @@ body{font-family:'Sora',sans-serif;color:var(--txt);overscroll-behavior:none;-we
               </div>
             </div>
             <div class="stat-box">
-              <div class="stat-box-lbl">Today's XP</div>
-              <div class="stat-box-val" id="b-temp" style="color:var(--xp)" id="home-school-xp">0</div>
-              <div class="stat-box-sub" id="b-cond">School XP today</div>
+              <div class="stat-box-lbl">Weather</div>
+              <div class="stat-box-val" id="b-temp">--<sup>°F</sup></div>
+              <div class="stat-box-sub" id="b-cond">Loading...</div>
               <div class="stat-box-cells">
-                <div class="stat-cell"><div class="sc-lbl">Done</div><div class="sc-val" id="b-fl" id="home-done">0</div></div>
-                <div class="stat-cell"><div class="sc-lbl">Left</div><div class="sc-val" id="b-wnd" id="home-left">0</div></div>
-                <div class="stat-cell"><div class="sc-lbl">Total</div><div class="sc-val" id="b-hum" id="home-total">0</div></div>
+                <div class="stat-cell"><div class="sc-lbl">Feels</div><div class="sc-val" id="b-fl">--</div></div>
+                <div class="stat-cell"><div class="sc-lbl">Wind</div><div class="sc-val" id="b-wnd">--</div></div>
+                <div class="stat-cell"><div class="sc-lbl">Humid</div><div class="sc-val" id="b-hum">--</div></div>
               </div>
             </div>
           </div>
 
-          <div class="block-card" id="home-school-card">
-            <div class="bc-eyebrow">Today's session</div>
+          <div class="block-card">
+            <div class="bc-eyebrow">Right now</div>
             <div class="bc-name" id="b-block-name">Loading...</div>
-            <div class="bc-timer" id="b-timer" style="font-size:32px;">--</div>
-            <div class="bc-lbl">subjects remaining</div>
+            <div class="bc-timer" id="b-timer">--:--</div>
+            <div class="bc-lbl">hours : minutes left</div>
             <div class="bc-prog-track"><div class="bc-prog-fill" id="b-prog" style="width:0%"></div></div>
-            <div class="bc-next" id="b-next">XP available: <span>--</span></div>
+            <div class="bc-next" id="b-next">Up next: <span>--</span></div>
           </div>
 
-
-
-          <button class="btn btn-school" onclick="nav('school')" style="margin-top:0;">📚 Start Today's Session</button>
-
-        </div>
-      </div><!-- SCHOOL -->
-      <div class="screen" id="s-school">
-
-        <div id="school-noday" style="display:none;">
-          <div class="noday-icon">🌴</div>
-          <div class="noday-title" id="noday-title">No school today</div>
-          <div class="noday-msg" id="noday-msg">Rest up. You've earned it.</div>
-          <div class="noday-day" id="noday-day"></div>
-        </div>
-
-        <div id="school-idle" class="school-idle" style="display:none;">
-          <div class="si-icon">📚</div>
-          <div class="si-title">Ready to learn?</div>
-          <div class="si-sub" id="sh-lesson-count"></div>
-          <button class="btn btn-school" style="max-width:260px;margin:0 auto;" onclick="startSchool()">Start Session</button>
-        </div>
-
-        <div id="school-active" style="display:none;">
-          <div class="school-layout">
-            <div>
-              <div class="school-hero">
-                <div class="sh-eye"><div class="sh-pulse"></div><span id="sh-progress-eye">Subject 1 of 1</span></div>
-                <div class="sh-subject" id="sh-subject">---</div>
-                <div class="sh-desc" id="sh-desc"></div>
-                <div class="sh-timer" id="sh-timer">00:00</div>
-                <div class="sh-timer-lbl" id="sh-timer-lbl">Time remaining</div>
-                <div class="sh-track"><div class="sh-fill" id="sh-fill" style="width:0%"></div></div>
-                <div class="sh-link" id="sh-link"></div>
-              </div>
-              <div class="school-up-next" id="school-up-next">
-                <div class="un-lbl">Up next</div>
-                <div class="un-name" id="sh-un-name">---</div>
-                <div class="un-dur" id="sh-un-dur">---</div>
-              </div>
-              <div class="school-xp-bar">
-                <div class="sxp-lbl">School XP today</div>
-                <div class="sxp-val" id="sh-xp-val">0</div>
-                <div class="sxp-max" id="sh-xp-max">/ 0 XP available</div>
-                <div class="sxp-track"><div class="sxp-fill" id="sh-xp-fill" style="width:0%"></div></div>
-              </div>
-              <button class="btn btn-school" id="sh-done-btn" onclick="schoolMarkDone()">✓ Done - Next Subject</button>
-              <button class="btn btn-ghost" onclick="requirePin('skipschool')">Skip (Parent)</button>
-            </div>
-            <div>
-              <div class="panel">
-                <div class="ph violet">Subjects <div class="ph-line"></div><span class="ph-count" id="sh-progress">0/0</span></div>
-                <div id="lesson-list"></div>
-              </div>
-            </div>
+          <div class="panel">
+            <div class="ph">Today's timeline <div class="ph-line"></div></div>
+            <div class="upcoming-list" id="b-upcoming"><div class="loading-msg">Loading...</div></div>
           </div>
-        </div>
 
-        <div id="school-complete" class="school-complete" style="display:none;">
-          <div class="si-icon">🎉</div>
-          <div class="sc-score-big" id="sc-score">100%</div>
-          <div class="sc-lbl-big">Session Complete</div>
-          <div class="sc-msg" id="sc-msg">All subjects done. Great work today.</div>
-          <button class="btn btn-ghost" style="max-width:260px;margin:0 auto;" onclick="requirePin('resetschool')">↺ Reset (Parent)</button>
+          <button class="btn btn-primary" onclick="nav('mission')" style="margin-top:0;">View Full Schedule</button>
+
         </div>
-      </div><!-- REWARDS -->
+      </div>
+
+      <!-- SCHEDULE -->
+      <div class="screen" id="s-mission">
+        <div class="panel">
+          <div class="ph">Today's schedule <div class="ph-line"></div><span class="ph-count" id="m-count"></span></div>
+          <div id="m-schedule"><div class="loading-msg">Loading...</div></div>
+        </div>
+      </div><!-- TASKS -->
+      <div class="screen" id="s-activities">
+        <div class="xp-hero">
+          <div class="xp-lbl">XP Earned Today</div>
+          <div class="xp-val" id="a-xp-val">0</div>
+          <div class="xp-max" id="a-xp-max">/ 0 XP available</div>
+          <div class="xp-bar-track"><div class="xp-bar-fill" id="a-xp-fill" style="width:0%"></div></div>
+        </div>
+        <div class="panel">
+          <div class="ph">Schedule <div class="ph-line"></div><span class="ph-count" id="a-sched-count"></span></div>
+          <div id="a-sched-list"><div class="loading-msg">Loading...</div></div>
+        </div>
+        <div class="panel">
+          <div class="ph">Tasks <div class="ph-line"></div><span class="ph-count" id="a-count"></span></div>
+          <div id="a-chore-list"><div class="loading-msg">Loading...</div></div>
+        </div>
+        <button class="btn btn-ghost" onclick="requirePin('resetactivities')">↺ Reset All (Parent)</button>
+      </div>
+
+      <!-- REWARDS -->
       <div class="screen" id="s-rewards">
         <div class="xp-balance">
           <div>
@@ -884,8 +870,8 @@ body{font-family:'Sora',sans-serif;color:var(--txt);overscroll-behavior:none;-we
           <div class="rh-msg" id="d-msg">Check back at the end of the day.</div>
         </div>
         <div class="stat-grid">
-          <div class="stat-cell-box"><div class="stat-cell-lbl">Session XP</div><div class="stat-cell-val" id="d-chore-xp">0</div></div>
-          <div class="stat-cell-box"><div class="stat-cell-lbl">School XP</div><div class="stat-cell-val" id="d-school-xp" style="color:var(--cat-school)">0</div></div>
+          <div class="stat-cell-box"><div class="stat-cell-lbl">Task XP</div><div class="stat-cell-val" id="d-chore-xp">0</div></div>
+          <div class="stat-cell-box"><div class="stat-cell-lbl">Streak</div><div class="stat-cell-val" id="d-school-xp">🔥</div></div>
           <div class="stat-cell-box"><div class="stat-cell-lbl">Level</div><div class="stat-cell-val" id="d-rank-abbr">—</div></div>
         </div>
         <div class="streak-card">
@@ -917,21 +903,25 @@ body{font-family:'Sora',sans-serif;color:var(--txt);overscroll-behavior:none;-we
           <button class="btn-save-confirm" onclick="saveParentChanges()">Save Changes</button>
         </div>
         <div class="parent-tabs">
-            <button class="ptab active" id="ptab-school" onclick="ptab('school')">School</button>
+            <button class="ptab active" id="ptab-schedule" onclick="ptab('schedule')">Schedule</button>
+            <button class="ptab" id="ptab-tasks" onclick="ptab('tasks')">Tasks</button>
             <button class="ptab" id="ptab-rewards" onclick="ptab('rewards')">Rewards</button>
             <button class="ptab" id="ptab-warnings" onclick="ptab('warnings')">Warnings</button>
             <button class="ptab" id="ptab-settings" onclick="ptab('settings')">Settings</button>
           </div>
-          <div class="ptab-content active" id="pc-school">
+          <div class="ptab-content active" id="pc-schedule">
             <div class="parent-toolbar">
-              <span class="parent-hint">Set school days and subjects.</span>
-              <button class="btn-add" onclick="addSubject()">+ Add Subject</button>
+              <span class="parent-hint">Tap a block to edit.</span>
+              <button class="btn-add" onclick="addBlock()">+ Add Block</button>
             </div>
-            <div class="panel" style="margin-bottom:12px;">
-              <div class="ph">School Days <div class="ph-line"></div></div>
-              <div class="day-toggles" id="school-day-toggles"></div>
+            <div id="block-editor-list"></div>
+          </div>
+          <div class="ptab-content" id="pc-tasks">
+            <div class="parent-toolbar">
+              <span class="parent-hint">Tasks without times show in the Tasks tab.</span>
+              <button class="btn-add" onclick="addTask()">+ Add Task</button>
             </div>
-            <div id="subject-editor-list"></div>
+            <div id="task-editor-list"></div>
           </div>
           <div class="ptab-content" id="pc-rewards">
             <div class="parent-toolbar">
@@ -940,51 +930,83 @@ body{font-family:'Sora',sans-serif;color:var(--txt);overscroll-behavior:none;-we
             </div>
             <div id="reward-editor-list"></div>
           </div>
-          <div class="ptab-content" id="pc-warnings">
+                    <div class="ptab-content" id="pc-warnings">
+
+            <!-- LIVE PREVIEW CARD -->
+            <div class="panel" id="warn-preview-card" style="margin-bottom:12px;text-align:center;position:relative;overflow:hidden;">
+              <div style="font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">Live Preview</div>
+              <div style="font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;" id="wp-subject-lbl">Math — lesson 2 of 4</div>
+              <div id="wp-timer" style="font-family:'JetBrains Mono',monospace;font-size:52px;font-weight:500;color:var(--accent);line-height:1;transition:background 1.5s ease,color .3s,padding .3s,border-radius .3s;">04:00</div>
+              <div style="font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.4px;margin-top:5px;" id="wp-timer-lbl">time remaining</div>
+              <div style="height:4px;background:var(--border2);border-radius:2px;margin:14px 0 0;">
+                <div id="wp-fill" style="height:100%;background:var(--accent);border-radius:2px;width:30%;transition:background 1.5s ease;"></div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn btn-ghost" style="flex:1;font-size:12px;margin-top:0;" onclick="wpPreview('warn')">Preview Warning</button>
+                <button class="btn btn-ghost" style="flex:1;font-size:12px;margin-top:0;" onclick="wpPreview('end')">Preview End</button>
+                <button class="btn btn-ghost" style="flex:1;font-size:12px;margin-top:0;" onclick="wpReset()">Reset</button>
+              </div>
+            </div>
+
+            <!-- VISUAL STYLE -->
+            <div class="panel" style="margin-bottom:12px;">
+              <div class="ph">Visual style <div class="ph-line"></div></div>
+              <div style="display:flex;flex-direction:column;gap:8px;" id="wp-visual-options">
+                <button class="warn-opt-btn warn-opt-active" id="wopt-color" onclick="wpSetVisual('color')">
+                  <div class="warn-opt-label">Color shift</div>
+                  <div class="warn-opt-desc">Timer pill fades purple → amber → red</div>
+                </button>
+                <button class="warn-opt-btn" id="wopt-pulse" onclick="wpSetVisual('pulse')">
+                  <div class="warn-opt-label">Soft pulse</div>
+                  <div class="warn-opt-desc">Card gently breathes — no flashing</div>
+                </button>
+                <button class="warn-opt-btn" id="wopt-both" onclick="wpSetVisual('both')">
+                  <div class="warn-opt-label">Both</div>
+                  <div class="warn-opt-desc">Color shift + soft pulse together</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- CHIME -->
+            <div class="panel" style="margin-bottom:12px;">
+              <div class="ph">Warning chime <div class="ph-line"></div></div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <button class="warn-opt-btn warn-opt-active" id="wopt-soft" onclick="wpSetChime('soft')">
+                  <div class="warn-opt-label">Soft chime</div>
+                  <div class="warn-opt-desc">Gentle ascending bells</div>
+                </button>
+                <button class="warn-opt-btn" id="wopt-bowl" onclick="wpSetChime('bowl')">
+                  <div class="warn-opt-label">Singing bowl</div>
+                  <div class="warn-opt-desc">Calm, resonant tone with harmonics</div>
+                </button>
+                <button class="warn-opt-btn" id="wopt-marimba" onclick="wpSetChime('marimba')">
+                  <div class="warn-opt-label">Marimba</div>
+                  <div class="warn-opt-desc">Light, cheerful notes</div>
+                </button>
+                <button class="warn-opt-btn" id="wopt-none" onclick="wpSetChime('none')">
+                  <div class="warn-opt-label">No chime</div>
+                  <div class="warn-opt-desc">Visual only, no sound</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- TRIGGER TIMING -->
             <div class="panel">
-              <div class="ph">Warning trigger <div class="ph-line"></div></div>
+              <div class="ph">Trigger timing <div class="ph-line"></div></div>
               <div class="setting-row">
                 <label class="setting-lbl">Warn at</label>
                 <select class="field-select" id="set-warn-mins" style="flex:1;" onchange="if(!STAGING)startEditing();STAGING.config.warnMins=parseInt(this.value);">
                   <option value="2">2 minutes left</option>
                   <option value="3">3 minutes left</option>
-                  <option value="5">5 minutes left</option>
+                  <option value="5" selected>5 minutes left</option>
                   <option value="7">7 minutes left</option>
                   <option value="10">10 minutes left</option>
                 </select>
               </div>
             </div>
-            <div class="panel">
-              <div class="ph">Visual style <div class="ph-line"></div></div>
-              <div class="setting-row">
-                <label class="setting-lbl">Style</label>
-                <select class="field-select" id="set-warn-visual" style="flex:1;" onchange="if(!STAGING)startEditing();STAGING.config.warnVisual=this.value;">
-                  <option value="color">Color shift (purple to yellow to red)</option>
-                  <option value="pulse">Soft pulse only</option>
-                  <option value="both">Both color + pulse</option>
-                </select>
-              </div>
-              <div style="font-size:11px;color:var(--txt3);margin-top:8px;line-height:1.6;">
-                Color shift gradually changes the timer from purple to amber to red as time runs out. Soft pulse makes the card gently breathe — no flashing.
-              </div>
-            </div>
-            <div class="panel">
-              <div class="ph">Chime <div class="ph-line"></div></div>
-              <div class="setting-row">
-                <label class="setting-lbl">Warning chime</label>
-                <select class="field-select" id="set-warn-chime" style="flex:1;" onchange="if(!STAGING)startEditing();STAGING.config.warnChime=this.value;">
-                  <option value="soft">Soft chime (gentle bells)</option>
-                  <option value="bowl">Singing bowl (calm, resonant)</option>
-                  <option value="marimba">Marimba (light, cheerful)</option>
-                  <option value="none">No chime</option>
-                </select>
-              </div>
-              <div style="font-size:11px;color:var(--txt3);margin-top:8px;line-height:1.6;">
-                Plays once when the warning window begins. The end-of-timer chime is always three descending tones — different so your child learns to tell them apart.
-              </div>
-            </div>
+
           </div>
-          <div class="ptab-content" id="pc-settings">
+<div class="ptab-content" id="pc-settings">
             <div class="panel">
               <div class="ph">Profile <div class="ph-line"></div></div>
               <div class="setting-row">
@@ -1025,7 +1047,8 @@ body{font-family:'Sora',sans-serif;color:var(--txt);overscroll-behavior:none;-we
 
   <div class="navbar">
     <button class="nb active" id="nb-brief"      onclick="nav('brief')">      <span class="nb-icon">🏠</span>Home</button>
-    <button class="nb"        id="nb-school"     onclick="nav('school')">     <span class="nb-icon">📚</span>School</button>
+    <button class="nb"        id="nb-mission"    onclick="nav('mission')">    <span class="nb-icon">🗓</span>Schedule</button>
+    <button class="nb"        id="nb-activities" onclick="nav('activities')"> <span class="nb-icon">✅</span>Tasks</button>
     <button class="nb"        id="nb-rewards"    onclick="nav('rewards')">    <span class="nb-icon">⭐</span>Rewards</button>
     <button class="nb"        id="nb-debrief"    onclick="nav('debrief')">    <span class="nb-icon">📊</span>Report</button>
   </div>
@@ -1272,7 +1295,7 @@ function showParentScreen(){
 function nav(screen){
   if(screen==='parent'&&!parentUnlocked){
     // Show locked state, then require PIN
-    const screens=['brief','school','rewards','debrief','parent'];
+    const screens=['brief','mission','activities','rewards','debrief','parent'];
     screens.forEach(s=>{const sc=el('s-'+s);if(sc)sc.classList.remove('active');const nb=el('nb-'+s);if(nb){nb.classList.remove('active');nb.classList.remove('school-active');}});
     el('s-parent').classList.add('active');
     el('nb-parent').classList.add('active');
@@ -1280,14 +1303,15 @@ function nav(screen){
     el('app-title').textContent='Parent';
     return;
   }
-  const screens=['brief','school','rewards','debrief','parent'];
+  const screens=['brief','mission','activities','rewards','debrief','parent'];
   screens.forEach(s=>{const sc=el('s-'+s);if(sc)sc.classList.remove('active');const nb=el('nb-'+s);if(nb){nb.classList.remove('active');nb.classList.remove('school-active');}});
   const sc=el('s-'+screen);if(sc)sc.classList.add('active');
   const nb=el('nb-'+screen);
   if(nb){if(screen==='school')nb.classList.add('school-active');else nb.classList.add('active');}
-  const titles={brief:'stackd · school',school:'School',rewards:'Rewards',debrief:'Daily Report',parent:'Parent'};
+  const titles={brief:'stackd',mission:'Schedule',activities:'Tasks',rewards:'Rewards',debrief:'Daily Report',parent:'Parent'};
   el('app-title').textContent=titles[screen]||'stackd';
-  const renders={brief:renderBrief,school:renderSchool,rewards:renderRewards,debrief:renderDebrief,parent:renderParent};
+  const renders={brief:renderBrief,mission:renderMission,activities:renderActivities,rewards:renderRewards,debrief:renderDebrief,parent:renderParent};
+function renderSchool(){} function getTodaySubjects(){return [];}
   if(renders[screen])renders[screen]();
 }
 
@@ -1314,21 +1338,34 @@ function renderBrief(){
   el('b-rank-fill').style.width=pct+'%';
   el('b-lxp').textContent=total.toLocaleString();
   el('b-nxp').textContent=next?next.min.toLocaleString():'MAX';
-  // School session summary
-  const lessons=getTodaySubjects();
-  const done=lessons.filter((_,i)=>DB.isSubjectDone(i)).length;
-  const left=lessons.length-done;
-  const totalXP=lessons.reduce((s,l)=>s+l.xp,0);
-  const earnedXP=DB.getSchoolXPToday();
-  const pctDone=lessons.length>0?Math.round((done/lessons.length)*100):0;
-  el('b-block-name').textContent=lessons.length===0?'No school today':done===lessons.length&&lessons.length>0?'Session complete! 🎉':'Session in progress';
-  el('b-timer').textContent=done+'/'+lessons.length;
-  el('b-prog').style.width=pctDone+'%';
-  el('b-next').innerHTML='XP available: <span>'+totalXP+'</span>';
-  el('b-temp').textContent=earnedXP;
-  el('b-fl').textContent=done;
-  el('b-wnd').textContent=left;
-  el('b-hum').textContent=lessons.length;
+  const cur=getCurrentBlock();const nxt=getNextBlock();
+  const totalMins=new Date().getHours()*60+new Date().getMinutes();
+  if(cur){
+    const remMins=cur.endMins-totalMins;
+    const p=Math.min(100,Math.round(((totalMins-cur.startMins)/(cur.endMins-cur.startMins))*100));
+    el('b-block-name').textContent=cur.block.block;
+    el('b-timer').textContent=fmtMins(remMins);
+    el('b-prog').style.width=p+'%';
+    el('b-next').innerHTML=nxt?'Up next: <span>'+nxt.block+'</span>':'<span>Last block today 👏</span>';
+  }else{
+    el('b-block-name').textContent=nxt?nxt.block:'All done today!';
+    el('b-timer').textContent='--:--';
+    el('b-prog').style.width='0%';
+    el('b-next').innerHTML=nxt?'Starts at: <span>'+nxt.start+'</span>':'<span>Great work today! 🎉</span>';
+  }
+  const up=el('b-upcoming');up.innerHTML='';
+  const timedBlocks=DB.schedule.filter(b=>isActiveDay(b.days)&&b.start&&b.start!=='none');
+  timedBlocks.forEach(b=>{
+    const sm=toMins(b.start);const em=b.end?toMins(b.end):sm+90;
+    const isCur=cur&&cur.block===b;const isDone=em!==null&&totalMins>=em&&!isCur;
+    const div=document.createElement('div');div.className='up-item'+(isCur?' now':'');
+    if(isDone)div.style.opacity='.3';
+    const timeStr=b.end?b.start+'–'+b.end:b.start;
+    const color=CAT_COLOR[b.category]||CAT_COLOR.chore;
+    div.innerHTML='<div class="up-dot" style="background:'+color+'"></div><span class="up-lbl">'+b.block+'</span><span class="up-time">'+timeStr+'</span>'+(isCur?'<span class="now-tag">Now</span>':'');
+    up.appendChild(div);
+  });
+  if(!timedBlocks.length)up.innerHTML='<div class="loading-msg">No schedule - set one up in Parent tab.</div>';
 }
 
 function getCurrentBlock(){
@@ -1647,14 +1684,17 @@ function unlockReward(id,cost,name){
 
 // -- REPORT --
 function renderDebrief(){
-  const choreXP=DB.getChoreXP();const schoolXP=DB.getSchoolXPToday();
-  const lessons=getTodaySubjects();
-  const doneItems=lessons.filter((_,i)=>DB.isSubjectDone(i)).length;
-  const totalItems=lessons.length;
+  const choreXP=DB.getChoreXP();const schoolXP=0;
+  let totalItems=0,doneItems=0;
+  DB.schedule.filter(b=>isActiveDay(b.days)).forEach(b=>{
+    totalItems++;if(DB.isBlockDone(b.id))doneItems++;
+    (b.items||[]).forEach(it=>{totalItems++;if(DB.isSubitemDone(it.id))doneItems++;});
+  });
+  DB.tasks.filter(t=>isActiveDay(t.days)).forEach(t=>{totalItems++;if(DB.isTaskDone(t.id))doneItems++;});
   const pct=totalItems>0?Math.round((doneItems/totalItems)*100):0;
   const streak=DB.getStreak();const{rank,total,next,pct:rpct}=getRankData();
-  el('d-chore-xp').textContent=DB.getSchoolXPToday();
-  el('d-school-xp').textContent=schoolXP;
+  el('d-chore-xp').textContent=choreXP;
+  el('d-school-xp').textContent=streak+'🔥';
   el('d-rank-abbr').textContent=rank.abbr;
   el('d-rank-abbr2').textContent=rank.abbr;
   el('d-rank-name').textContent=rank.name;
@@ -1683,7 +1723,7 @@ function renderDebrief(){
 function renderParent(){
   startEditing();
   el('set-kidname').value=(STAGING?STAGING.config.kidName:DB.config.kidName)||'';
-  ptab('school');
+  ptab('schedule');
 }
 
 function ptab(name){
@@ -1870,12 +1910,6 @@ function deleteReward(id){if(!STAGING)startEditing();STAGING.rewards=STAGING.rew
 function addReward(){if(!STAGING)startEditing();STAGING.rewards.push({id:uid(),name:'New Reward',icon:'⭐',desc:'',cost:100,active:true});renderRewardEditor();}
 
 // -- SETTINGS EDITOR --
-function renderWarningsEditor(){
-  var cfg=(STAGING||DB).config;
-  var wm=el('set-warn-mins');if(wm&&wm.tagName)wm.value=cfg.warnMins||5;
-  var wv=el('set-warn-visual');if(wv&&wv.tagName)wv.value=cfg.warnVisual||'both';
-  var wc=el('set-warn-chime');if(wc&&wc.tagName)wc.value=cfg.warnChime||'soft';
-}
 
 function renderSettingsEditor(){
   el('set-kidname').value=DB.config.kidName||'';
@@ -1962,7 +1996,7 @@ function checkPin(){
     const action=pinCallback;pinBuffer='';pinCallback=null;
     if(action==='skipschool')skipSchool();
     else if(action==='resetschool')resetSchool();
-    
+    else if(action==='resetactivities')resetActivities();
     else if(action==='parentunlock'){parentUnlocked=true;showParentScreen();}
   }else{
     el('pin-err').textContent='Wrong PIN - try again.';
@@ -1971,9 +2005,9 @@ function checkPin(){
 }
 
 // -- AUDIO --
-function playXP(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[440,554,659,880].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(.1,ctx.currentTime+i*.07);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.07+.15);o.start(ctx.currentTime+i*.07);o.stop(ctx.currentTime+i*.07+.2);});}catch(e){}}
-function playSuccess(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[523,659,784,1047].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(.1,ctx.currentTime+i*.1);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.1+.2);o.start(ctx.currentTime+i*.1);o.stop(ctx.currentTime+i*.1+.25);});}catch(e){}}
-function playAlert(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[880,660,880,660].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.06,ctx.currentTime+i*.25);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.25+.2);o.start(ctx.currentTime+i*.25);o.stop(ctx.currentTime+i*.25+.25);});}catch(e){}}
+function playXP(){try{var ctx=getAudioCtx();[440,554,659,880].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(.1,ctx.currentTime+i*.07);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.07+.15);o.start(ctx.currentTime+i*.07);o.stop(ctx.currentTime+i*.07+.2);});}catch(e){}}
+function playSuccess(){try{var ctx=getAudioCtx();[523,659,784,1047].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(.1,ctx.currentTime+i*.1);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.1+.2);o.start(ctx.currentTime+i*.1);o.stop(ctx.currentTime+i*.1+.25);});}catch(e){}}
+function playAlert(){try{var ctx=getAudioCtx();[880,660,880,660].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.06,ctx.currentTime+i*.25);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.25+.2);o.start(ctx.currentTime+i*.25);o.stop(ctx.currentTime+i*.25+.25);});}catch(e){}}
 
 // -- UI HELPERS --
 function showToast(msg){const t=el('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
@@ -2042,7 +2076,7 @@ function launchApp(){
   el('splash').classList.add('sp-out');
   el('app').classList.add('ready');
   applyTheme(getTheme());
-  setClock();renderBrief();
+  setClock();renderBrief();renderActivities();loadWeather();updateKidName();
   setInterval(setClock,1000);setInterval(updateUptime,1000);
   setInterval(()=>{
     if(el('s-brief').classList.contains('active'))renderBrief();
@@ -2084,7 +2118,7 @@ function getWarnChime(){ return DB.config.warnChime||'soft'; }
 
 function playWarnChime(){
   try{
-    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var ctx=getAudioCtx();
     var style=getWarnChime();
     if(style==='none')return;
 
@@ -2137,7 +2171,7 @@ function playWarnChime(){
 function playEndChime(){
   // Distinct end chime — three descending tones, calm but noticeable
   try{
-    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var ctx=getAudioCtx();
     [[784,0,'sine'],[659,0.4,'sine'],[523,0.8,'sine']].forEach(function(p){
       var o=ctx.createOscillator(),g=ctx.createGain();
       o.connect(g);g.connect(ctx.destination);
@@ -2226,6 +2260,184 @@ function resetTimerWarning(cardEl, timerEl, fillEl){
   var tint=el('warn-tint');
   if(tint&&tint.classList){tint.classList.remove('warn-active');tint.classList.remove('end-active');}
 }
+
+// -- WARNING PREVIEW --
+var wpVisual = 'color';
+var wpChime = 'soft';
+var wpAnimating = false;
+
+function wpSetVisual(v){
+  if(!STAGING)startEditing();
+  STAGING.config.warnVisual=v;
+  wpVisual=v;
+  ['color','pulse','both'].forEach(function(id){
+    var btn=el('wopt-'+id);
+    if(btn&&btn.classList){
+      btn.classList.toggle('warn-opt-active',id===v);
+    }
+  });
+}
+
+function wpSetChime(c){
+  if(!STAGING)startEditing();
+  STAGING.config.warnChime=c;
+  wpChime=c;
+  ['soft','bowl','marimba','none'].forEach(function(id){
+    var btn=el('wopt-'+id);
+    if(btn&&btn.classList){
+      btn.classList.toggle('warn-opt-active',id===c);
+    }
+  });
+}
+
+function wpPlayChime(type){
+  try{
+    var ctx=getAudioCtx();if(ctx.state==="suspended")ctx.resume();
+    if(type==='soft'){
+      [[523,0],[659,0.6],[784,1.2]].forEach(function(p){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='sine';o.frequency.value=p[0];
+        g.gain.setValueAtTime(0,ctx.currentTime+p[1]);
+        g.gain.linearRampToValueAtTime(0.12,ctx.currentTime+p[1]+0.05);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+p[1]+1.8);
+        o.start(ctx.currentTime+p[1]);o.stop(ctx.currentTime+p[1]+2);
+      });
+    } else if(type==='bowl'){
+      [[220,0.12],[440,0.06],[660,0.03]].forEach(function(pair){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='sine';o.frequency.value=pair[0];
+        g.gain.setValueAtTime(0.001,ctx.currentTime);
+        g.gain.linearRampToValueAtTime(pair[1],ctx.currentTime+0.08);
+        g.gain.setValueAtTime(pair[1],ctx.currentTime+0.15);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+4.0);
+        o.start(ctx.currentTime);o.stop(ctx.currentTime+4.2);
+      });
+      var ob=ctx.createOscillator(),gb=ctx.createGain();
+      ob.connect(gb);gb.connect(ctx.destination);
+      ob.type='sine';ob.frequency.value=222;
+      gb.gain.setValueAtTime(0.001,ctx.currentTime);
+      gb.gain.linearRampToValueAtTime(0.04,ctx.currentTime+0.1);
+      gb.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+3.5);
+      ob.start(ctx.currentTime);ob.stop(ctx.currentTime+4.0);
+    } else if(type==='marimba'){
+      [[880,0],[1047,0.22],[1319,0.44],[1047,0.66]].forEach(function(p){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='triangle';o.frequency.value=p[0];
+        g.gain.setValueAtTime(0,ctx.currentTime+p[1]);
+        g.gain.linearRampToValueAtTime(0.1,ctx.currentTime+p[1]+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+p[1]+0.55);
+        o.start(ctx.currentTime+p[1]);o.stop(ctx.currentTime+p[1]+0.7);
+      });
+    }
+  }catch(e){}
+}
+
+function wpPreview(mode){
+  if(wpAnimating)wpReset();
+  wpAnimating=true;
+  var timerEl=el('wp-timer');
+  var fillEl=el('wp-fill');
+  var card=el('warn-preview-card');
+  if(mode==='warn'){
+    // Play chime
+    if(wpChime!=='none') wpPlayChime(wpChime);
+    // Show warning visual
+    if(wpVisual==='color'||wpVisual==='both'){
+      if(timerEl){timerEl.style.color='#fff';timerEl.style.background='var(--xp)';timerEl.style.borderRadius='10px';timerEl.style.padding='4px 16px';}
+      if(fillEl) fillEl.style.background='var(--xp)';
+      setTimeout(function(){
+        if(timerEl) timerEl.style.background='var(--red)';
+        if(fillEl) fillEl.style.background='var(--red)';
+      },2000);
+    }
+    if(wpVisual==='pulse'||wpVisual==='both'){
+      if(card) card.classList.add('warn-preview-pulse');
+    }
+    if(el('wp-timer-lbl')) el('wp-timer-lbl').textContent='warning — 4 min left';
+    el('wp-timer').textContent='04:00';
+  } else {
+    // End chime
+    try{
+      var ctx=getAudioCtx();
+      [[784,0],[659,0.4],[523,0.8]].forEach(function(p){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='sine';o.frequency.value=p[0];
+        g.gain.setValueAtTime(0,ctx.currentTime+p[1]);
+        g.gain.linearRampToValueAtTime(0.13,ctx.currentTime+p[1]+0.05);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+p[1]+1.5);
+        o.start(ctx.currentTime+p[1]);o.stop(ctx.currentTime+p[1]+1.8);
+      });
+    }catch(e){}
+    if(timerEl){timerEl.style.color='#fff';timerEl.style.background='var(--red)';timerEl.style.borderRadius='10px';timerEl.style.padding='4px 16px';}
+    if(fillEl) fillEl.style.background='var(--red)';
+    if(card) card.classList.add('warn-preview-pulse');
+    el('wp-timer').textContent="00:00";
+    if(el('wp-timer-lbl')) el('wp-timer-lbl').textContent="time\'s up!";
+  }
+}
+
+function wpReset(){
+  wpAnimating=false;
+  var timerEl=el('wp-timer');
+  var fillEl=el('wp-fill');
+  var card=el('warn-preview-card');
+  if(timerEl){timerEl.style.color='';timerEl.style.background='';timerEl.style.borderRadius='';timerEl.style.padding='';timerEl.textContent='04:00';}
+  if(fillEl){fillEl.style.background='';fillEl.style.width='30%';}
+  if(card) card.classList.remove('warn-preview-pulse');
+  if(el('wp-timer-lbl')) el('wp-timer-lbl').textContent='time remaining';
+}
+
+function renderWarningsEditor(){
+  var cfg=(STAGING||DB).config;
+  var wm=el('set-warn-mins');if(wm&&wm.tagName)wm.value=cfg.warnMins||5;
+  wpVisual=cfg.warnVisual||'both';
+  wpChime=cfg.warnChime||'soft';
+  // Sync button states
+  ['color','pulse','both'].forEach(function(id){
+    var btn=el('wopt-'+id);
+    if(btn&&btn.classList) btn.classList.toggle('warn-opt-active',id===wpVisual);
+  });
+  ['soft','bowl','marimba','none'].forEach(function(id){
+    var btn=el('wopt-'+id);
+    if(btn&&btn.classList) btn.classList.toggle('warn-opt-active',id===wpChime);
+  });
+  wpReset();
+}
+
+// -- AUDIO CONTEXT (mobile-safe) --
+var _audioCtx = null;
+
+function getAudioCtx(){
+  if(!_audioCtx){
+    _audioCtx = new(window.AudioContext||window.webkitAudioContext)();
+  }
+  // Resume if suspended (required on iOS after page load)
+  if(_audioCtx.state === 'suspended'){
+    _audioCtx.resume();
+  }
+  return _audioCtx;
+}
+
+// Unlock audio on first user tap anywhere — required for iOS/Android
+function unlockAudio(){
+  var ctx = getAudioCtx();
+  // Play a silent buffer to unlock
+  var buf = ctx.createBuffer(1,1,22050);
+  var src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.connect(ctx.destination);
+  src.start(0);
+  document.removeEventListener('touchstart', unlockAudio);
+  document.removeEventListener('touchend', unlockAudio);
+  document.removeEventListener('click', unlockAudio);
+}
+document.addEventListener('touchstart', unlockAudio, {once:true});
+document.addEventListener('touchend', unlockAudio, {once:true});
+document.addEventListener('click', unlockAudio, {once:true});
 
 boot();
 </script>
